@@ -48,7 +48,7 @@ augmentation_functions = [
 ]
 
 # augmentationer 실행
-augmentationer("images", "labels", "output", augmentation_functions, "aug)
+augmentationer("images", "labels", "output", augmentation_functions, "aug_prefix")
 ```
 
 ### 멀티 사용법
@@ -116,7 +116,7 @@ visualizer(image_path, label_path)
 
 ## 주요 함수 설명
 
-### augmentationer(image_folder, txt_folder, output_folder, augmentation_functions)
+### augmentationer(image_folder, txt_folder, output_folder, augmentation_functions, aug_prefix)
 
 주어진 이미지 폴더와 라벨 폴더에서 이미지를 읽어와 다양한 증강 함수를 적용한 후, 증강된 이미지와 라벨을 출력 폴더에 저장합니다.
 
@@ -126,7 +126,7 @@ visualizer(image_path, label_path)
 - `txt_folder` (str 또는 PathLike): 원본 라벨 파일들이 저장된 폴더 경로
 - `output_folder` (str 또는 PathLike): 증강된 이미지와 라벨 파일들을 저장할 출력 폴더 경로
 - `augmentation_functions` (List[Callable]): 이미지와 라벨에 적용할 증강 함수들의 리스트
-- `aug_prefix` (str): 증강된 파일 이름에 추가할 접두사
+- `aug_prefix` (str): 증강된 파일 이름에 추가할 접두사 (예: "aug_1", "aug_2" 등, 증강된 파일 구분을 위해 사용)
 
 ### rotate_image_and_labels(image, labels, angle, padding_ratio=0.1)
 

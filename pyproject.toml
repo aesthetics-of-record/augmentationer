@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "augmentationer"
-version = "0.4.1"
+version = "0.4.2"
 description = ""
 authors = ["hyeonho cho <111675679+aesthetics-of-record@users.noreply.github.com>"]
 readme = "README.md"
