@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "augmentationer"
-version = "0.3.3"
+version = "0.4.1"
 description = ""
 authors = ["hyeonho cho <111675679+aesthetics-of-record@users.noreply.github.com>"]
 readme = "README.md"
@@ -10,7 +10,7 @@ packages = [
 
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.8"
 opencv-python = "^4.10.0.84"
 pillow = "^10.4.0"
 

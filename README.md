@@ -105,7 +105,10 @@ from augmentationer import visualizer
 image_path = 'output/images/image2_augmentation_3.jpg'
 label_path = 'output/labels/image2_augmentation_3.txt'
 
-# visualizer 실행
+# visualizer 실행 (class_colors 지정은 선택. 선택 안할 시 랜덤으로 컬러 지정됨.)
+visualizer(image_path, label_path, target_class_ids=[0,1], text=False, class_colors={0: (255, 0, 0), 1: (0, 255, 0)})
+
+# 클래스 지정없이 시각화 (기본 값 : 랜덤 컬러 지정, 모든 클래스 표시, 텍스트 표시)
 visualizer(image_path, label_path)
 ```
 

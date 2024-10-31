@@ -90,15 +90,12 @@ def rotate_image_and_labels(image, labels, angle, padding_ratio=0.1):
     Returns:
     tuple: 회전된 이미지와 조정된 라벨 리스트
     """
-    # 이미지 패딩
-    padding = int(max(image.shape) * padding_ratio)  # 패딩 비율 적용
-    padded_image = pad_image(image, padding)
     
-    # 패딩된 이미지 회전
-    (h, w) = padded_image.shape[:2]
+    # 이미지 회전
+    (h, w) = image.shape[:2]
     center = (w // 2, h // 2)
     M = cv2.getRotationMatrix2D(center, angle, 1.0)
-    rotated_image = cv2.warpAffine(padded_image, M, (w, h))
+    rotated_image = cv2.warpAffine(image, M, (w, h))
 
     # 라벨 회전 및 조정
     rotated_labels = []
@@ -108,8 +105,8 @@ def rotate_image_and_labels(image, labels, angle, padding_ratio=0.1):
         coords = np.array(parts[1:9], dtype=np.float32).reshape(-1, 2)
         
         # 좌표에 패딩 추가 및 스케일 조정
-        coords[:, 0] = coords[:, 0] * image.shape[1] + padding
-        coords[:, 1] = coords[:, 1] * image.shape[0] + padding
+        coords[:, 0] = coords[:, 0] * image.shape[1]
+        coords[:, 1] = coords[:, 1] * image.shape[0]
         
         # 회전 변환 적용
         ones = np.ones(shape=(len(coords), 1))
@@ -120,10 +117,12 @@ def rotate_image_and_labels(image, labels, angle, padding_ratio=0.1):
         rotated_coords[:, 0] /= w
         rotated_coords[:, 1] /= h
         
-        # 라벨 문자열 생성 (class x1 y1 x2 y2 x3 y3 x4 y4 x1 y1 형식)
-        rotated_coords = rotated_coords.flatten()
-        rotated_label = f"{class_id} " + " ".join(map(lambda x: f"{x:.6f}", rotated_coords)) + f" {rotated_coords[0]:.6f} {rotated_coords[1]:.6f}\n"
-        rotated_labels.append(rotated_label)
+        # 좌표가 이미지 범위를 벗어나는지 확인
+        if np.all(rotated_coords[:, 0] >= 0) and np.all(rotated_coords[:, 0] <= 1) and np.all(rotated_coords[:, 1] >= 0) and np.all(rotated_coords[:, 1] <= 1):
+            # 라벨 문자열 생성 (class x1 y1 x2 y2 x3 y3 x4 y4 x1 y1 형식)
+            rotated_coords = rotated_coords.flatten()
+            rotated_label = f"{class_id} " + " ".join(map(lambda x: f"{x:.6f}", rotated_coords)) + f" {rotated_coords[0]:.6f} {rotated_coords[1]:.6f}\n"
+            rotated_labels.append(rotated_label)
 
     return rotated_image, rotated_labels
 
@@ -393,9 +392,6 @@ if __name__ == "__main__":
         lambda img, lbl: rotate_image_and_labels(img, lbl, 30, 0.3),
         lambda img, lbl: (add_gaussian_noise(img)),
         lambda img, lbl: (apply_blur(img)),
-        lambda img, lbl: (convert_color(img)),
-        lambda img, lbl: apply_random_crop(img, lbl, 0.8),
-        lambda img, lbl: apply_perspective_transform(img, lbl, 0.2),
     ]
 
     augmentation_functions_2 = [
@@ -411,7 +407,6 @@ if __name__ == "__main__":
         lambda img, lbl: (add_gaussian_noise(img)),
         lambda img, lbl: (apply_blur(img)),
         lambda img, lbl: (convert_color(img)),
-        lambda img, lbl: apply_random_crop(img, lbl, 0.8),
         lambda img, lbl: apply_perspective_transform(img, lbl, 0.2),
     ]
 
@@ -420,4 +415,6 @@ if __name__ == "__main__":
     augmentationer(image_folder_path, txt_folder_path, output_folder_path, augmentation_functions_1, "augmentation_1")
     augmentationer(image_folder_path, txt_folder_path, output_folder_path, augmentation_functions_2, "augmentation_2")
     augmentationer(image_folder_path, txt_folder_path, output_folder_path, augmentation_functions_3, "augmentation_3")
+
+    
 
